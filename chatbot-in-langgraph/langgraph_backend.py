@@ -1,4 +1,3 @@
-from numpy.__config__ import CONFIG
 from langchain_core.messages import HumanMessage
 from langgraph.graph import StateGraph, START, END
 from typing import TypedDict, Annotated
@@ -29,3 +28,10 @@ graph.add_edge(START, "chat_node")
 graph.add_edge("chat_node", END)
 
 chatbot = graph.compile(checkpointer=checkpointer)
+
+for messageChunk, metadata in chatbot.stream(
+    {'messages': [HumanMessage(content='What is the recipie to make pasta')]},
+    config = {'configuarable': {'thread_id': 'thread-1'}},
+    stream_mode = 'messages'):
+    if(messageChunk.content):
+        print(messageChunk.content, end=' ', flush=True)
